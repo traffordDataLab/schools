@@ -1,6 +1,11 @@
 ---
 pagetitle: "Schools in Trafford"
-output: html_document
+lang: "en-GB"
+output: 
+  html_document:
+    css: styles.css
+    highlight: null
+    mathjax: null
 ---
 
 ```{r setup, include = FALSE}
@@ -33,13 +38,7 @@ map <- leaflet(sd, width = "100%", height = 350) %>%
   addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2020)</a> | Data: <a href="https://get-information-schools.service.gov.uk" target="_blank">DfE</a>', options = tileOptions(minZoom = 11, maxZoom = 18)) %>%
   addPolygons(data = sf, fillColor = "#CCCCCC", weight = 0.8, opacity = 1, color = "#212121") %>%  
   addAwesomeMarkers(popup = df$popup, icon = ~makeAwesomeIcon(icon = "fas fa-school", library = "fa", iconColor = "#FFFFFF", markerColor = "purple")) %>%
-  addEasyButton(
-    easyButton(
-      position = "topleft",
-      icon = "fa-crosshairs",
-      title = "Locate me",
-      onClick = JS(c("function(btn,  map){map.locate({setView:true,enableHighAccuracy: true })}")))) %>% 
-  onRender(paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'",");}"))
+  addFullscreenControl()
 ```
 
 ```{r, table}
@@ -75,30 +74,7 @@ table <- reactable(
                         cell = JS("function(cellInfo) {return cellInfo.value === 'No' ? '\u2718' : '\u2713'}")))
 )
 ```
-
-```{css}
-@import url('https://use.fontawesome.com/releases/v5.10.1/css/all.css');
-
-@import url('https://fonts.googleapis.com/css?family=Open+Sans%7CRoboto');
-
-html, body {
-  font-family: 'Open Sans', sans-serif;
-}
-        
-h1, h2, h3, h4 {
-  font-family: 'Roboto', sans-serif;
-  color: #707070;
-}
-
-h2 {
-  font-size: 1.6em;
-}
-
-.form-group {
-  margin-bottom: 0px;
-}
-```
-
+<header>
 ```{r, logo}
 a(
   href = "https://www.trafforddatalab.io", 
@@ -108,7 +84,7 @@ a(
       style = "position:absolute; top:0; right:0; padding: 10px;")
   )
 ```
-
+</header><main>
 ```{r, ui}
 div(class = "container-fluid",
     h1("Schools in Trafford", style = "padding-top: 25px; margin-bottom: 20px;"),
@@ -135,7 +111,7 @@ div(class = "container-fluid",
               filter_checkbox(id = "ofsted_rating", label = "Ofsted rating", sharedData = sd, group = ~ofsted_rating)
               ))),
     br(),
-    h2("School information", style = "margin-bottom: 15px;"),
+    h2("School information"),
     div(class = "row",
         div(class = "col-sm-12", table)),
     div(class = "row",
@@ -146,3 +122,68 @@ div(class = "container-fluid",
         )
     )
 ```
+</main>
+<script>
+  // Remove the crosstalk selection button from the Leaflet map. Map may not have initialised at this point so set up an interval to keep calling until it has
+  var removeSelectionButtonFn = setInterval(removeSelectionButton, 100);
+  
+  function removeSelectionButton() {
+    try {
+      // We don't have an id or name so have to do it by classname and then check we have the correct button by testing the 'title' attribute
+      var arrEasyButtonContainer = document.getElementsByClassName('easy-button-container');
+  
+      for (var i = 0; i < arrEasyButtonContainer.length; i++) {
+        if (arrEasyButtonContainer[i].childNodes[0].title == "Make a selection") {
+          var parent = arrEasyButtonContainer[i].parentNode;
+          parent.removeChild(arrEasyButtonContainer[i]);    // remove the whole container plus button
+          clearInterval(removeSelectionButtonFn);  // cancel any further calls to this function as we have completed all actions
+        }
+      }
+    }
+    catch(e) {
+      clearInterval(removeSelectionButtonFn);   // something went wrong so cancel fn call
+    }
+  }
+  
+  // Add aria-label attribute to the fullscreen Leaflet map button to identify its purpose as the link is empty (assessibility issue)
+  // Map may not have initialised at this point so set up an interval to keep calling until it has
+  var updateFullscreenButtonFn = setInterval(updateFullscreenButton, 100);
+  
+  function updateFullscreenButton() {
+    try {
+      // We don't have an id or name so have to do it by classname
+      var arrFullscreenButtonLink = document.getElementsByClassName('leaflet-control-fullscreen-button');
+      
+      if (arrFullscreenButtonLink.length > 0) {
+        // set aria-label to describe the function of the link/button
+        arrFullscreenButtonLink[0].setAttribute('aria-label', 'Maximise/minimise map.');
+        
+        clearInterval(updateFullscreenButtonFn);    // cancel any further calls to this function as we have completed all actions
+      }
+    }
+    catch(e) {
+      clearInterval(updateFullscreenButtonFn);    // something went wrong so cancel fn call
+    }
+  }
+  
+  // Add type="hidden" attribute to all form elements with classname "irs-hidden-input" to remove errors in
+  // WAVE due to the inputs not having labels.
+  var addInputHiddenFn = setInterval(addInputHidden, 500);
+  
+  function addInputHidden() {
+    try {
+      var arrHiddenInputs = document.getElementsByClassName('irs-hidden-input');
+    
+      if (arrHiddenInputs.length > 0) {
+        for (var i = 0; i < arrHiddenInputs.length; i++) {
+          arrHiddenInputs[i].setAttribute('type', 'hidden');
+        }
+        
+        clearInterval(addInputHiddenFn);   // cancel any further calls to this function as we have completed all actions
+      }
+    }
+    catch(e) {
+      clearInterval(addInputHiddenFn);   // something went wrong so cancel fn call
+    }
+  }
+</script>
