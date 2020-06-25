@@ -63,3 +63,10 @@ a, a:hover, a:focus, a:visited, .leaflet-container a
 {
     font-size: 0.8em;
 }
+
+/* Replacement heading for the labels causing validation errors */
+.formGroupHeading
+{
+    font-size: 1em;
+    font-weight: bold;
+}

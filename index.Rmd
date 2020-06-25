@@ -168,6 +168,7 @@ div(class = "container-fluid",
   
   // Add type="hidden" attribute to all form elements with classname "irs-hidden-input" to remove errors in
   // WAVE due to the inputs not having labels.
+  // The controls may not have initialised at this point so set up an interval to keep calling until they have
   var addInputHiddenFn = setInterval(addInputHidden, 500);
   
   function addInputHidden() {
@@ -186,4 +187,25 @@ div(class = "container-fluid",
       clearInterval(addInputHiddenFn);   // something went wrong so cancel fn call
     }
   }
+  
+  // Remove label tags created by crosstalk for the checkboxes and sliders as they cause validation errors,
+  // and replace them with spans containing the text of the label
+  // Reason for the error is that the 'for' attribute isn't referencing an id of a form control
+  // NOTE: the do while loop always references array index 0 because as the elements are removed from the DOM they are also removed from the array
+  var arrFormLabels = document.getElementsByClassName('control-label');
+  var parent;
+  var labelText;
+  var newNode;
+  
+  do {
+    parent = arrFormLabels[0].parentNode;       // container of the label
+    labelText = arrFormLabels[0].firstChild.textContent;    // get the label text we want to preserve
+    
+    newNode = document.createElement('span');   // create the replacement element to act as the heading...
+    newNode.appendChild(document.createTextNode(labelText));   // ...with the former label text
+    newNode.setAttribute('class', 'formGroupHeading');    // add CSS class to make it look like the label
+    
+    parent.replaceChild(newNode, arrFormLabels[0]);   // replace the old label with the new span
+  }
+  while (arrFormLabels.length > 0);
 </script>
