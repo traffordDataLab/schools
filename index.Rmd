@@ -208,4 +208,11 @@ div(class = "container-fluid",
     parent.replaceChild(newNode, arrFormLabels[0]);   // replace the old label with the new span
   }
   while (arrFormLabels.length > 0);
+  
+  // Add aria-labels to slider controls to inform the user as to their purpose
+  var arrSliders = document.getElementsByClassName('crosstalk-input-slider');
+  
+  for (var i = 0; i < arrSliders.length; i++) {
+    arrSliders[i].setAttribute('aria-label', 'Slider range control');
+  }
 </script>
