@@ -94,6 +94,7 @@ div(class = "container-fluid",
             list(
               # Phase
               filter_checkbox(id = "phase", label = "Phase", sharedData = sd, group = ~phase),
+              br(),
               # Type
               filter_checkbox(id = "type", label = "Type", sharedData = sd, group = ~type))),
         div(class = "col-xs-6 col-sm-3 col-md-3 col-lg-3", 
@@ -192,39 +193,43 @@ div(class = "container-fluid",
   
   
   // Remove label tags created by crosstalk for the checkboxes and sliders as they cause validation errors,
-  // and replace them with spans containing the text of the label
+  // and replace them with fieldsets and legends containing the text of the label
   // Reason for the error is that the 'for' attribute isn't referencing an id of a form control
   // NOTE: the do while loop always references array index 0 because as the elements are removed from the DOM they are also removed from the array
   var arrFormLabels = document.getElementsByClassName('control-label');
   var parent;
   var labelText;
   var newNode;
+  var fieldset;
+  var legend;
   
   do {
-    parent = arrFormLabels[0].parentNode;       // container of the label
+    parent = arrFormLabels[0].parentNode;                   // container of the label
     labelText = arrFormLabels[0].firstChild.textContent;    // get the label text we want to preserve
     
-    newNode = document.createElement('span');   // create the replacement element to act as the heading...
-    newNode.appendChild(document.createTextNode(labelText));   // ...with the former label text
-    newNode.setAttribute('class', 'formGroupHeading');    // add CSS class to make it look like the label
+    // create the new fieldset and legend nodes first
+    legend = document.createElement('legend');
+    legend.appendChild(document.createTextNode(labelText));
+    legend.setAttribute('class', 'formGroupHeading');
+    fieldset = document.createElement('fieldset');
+    fieldset.appendChild(legend);
     
-    parent.replaceChild(newNode, arrFormLabels[0]);   // replace the old label with the new span
+    parent.removeChild(arrFormLabels[0]);   // remove the old label
+    
+    // Now add all the children of parent to the newly created fieldset
+    while (parent.childNodes.length > 0) {
+      fieldset.appendChild(parent.childNodes[0]);
+    }
+    
+    parent.appendChild(fieldset);    // add the fieldset to the parent
+    
+    // For the slider widgets we also need to add an aria-label to describe the purpose of the group
+    if (parent.classList.contains('crosstalk-input-slider')) {
+      parent.setAttribute('aria-label', 'Slider range control for ' + labelText);
+      parent.setAttribute('tabindex', '0');    // allow the slider group to be accessed via tab
+    }
   }
   while (arrFormLabels.length > 0);
-  
-  
-  // Add aria-labels to slider control containers to inform the user as to their purpose
-  var arrSliders = document.getElementsByClassName('crosstalk-input-slider');   // The div surrounding the control
-  var sliderGroupName;
-  
-  for (var i = 0; i < arrSliders.length; i++) {
-    // The first child node is the span containing the heading for the slider.
-    // Use this heading as part of the aria-label to increase understanding
-    sliderGroupName = 'Slider range control for ' + arrSliders[i].childNodes[1].textContent;
-    arrSliders[i].setAttribute('aria-label', sliderGroupName);
-    
-    arrSliders[i].setAttribute('tabindex', '0');    // allow the slider group to be accessed via tab
-  }
   
   
   // Add aria-labels to the slider components
@@ -233,6 +238,8 @@ div(class = "container-fluid",
   
   function sliders() {
     try {
+      var arrSliders = document.getElementsByClassName('crosstalk-input-slider');   // The div surrounding the control group
+    
       var arrMinValues = document.getElementsByClassName('irs-min');          // range min label
       var arrMaxValues = document.getElementsByClassName('irs-max');          // range max label
       var arrFromValues = document.getElementsByClassName('irs-from');        // range from label

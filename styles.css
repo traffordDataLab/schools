@@ -64,9 +64,16 @@ a, a:hover, a:focus, a:visited, .leaflet-container a
     font-size: 0.8em;
 }
 
-/* Replacement heading for the labels causing validation errors */
+/* make the space between the fieldset legend and the checkboxes match with the inline ones */
+.checkbox:first-of-type
+{
+    margin-top: 0;
+}
+
+/* Replacement heading for the labels causing validation errors - now a legend in a fieldset */
 .formGroupHeading
 {
     font-size: 1em;
     font-weight: bold;
+    margin-bottom: 3px;
 }
