@@ -35,7 +35,7 @@ sd_table <- select(df, name, headteacher, website, nursery_provision, sixth_form
 
 ```{r, map}
 map <- leaflet(sd, width = "100%", height = 350) %>%
-  addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2020)</a> | Data: <a href="https://get-information-schools.service.gov.uk" target="_blank">DfE</a>', options = tileOptions(minZoom = 11, maxZoom = 18)) %>%
+  addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2020)</a> | Data: <a href="https://get-information-schools.service.gov.uk" target="_blank">Department for Education</a>', options = tileOptions(minZoom = 11, maxZoom = 18)) %>%
   addPolygons(data = sf, fillColor = "#CCCCCC", weight = 0.8, opacity = 1, color = "#212121") %>%  
   addAwesomeMarkers(popup = df$popup, icon = ~makeAwesomeIcon(icon = "fas fa-school", library = "fa", iconColor = "#FFFFFF", markerColor = "purple")) %>%
   addFullscreenControl()
@@ -117,7 +117,7 @@ div(class = "container-fluid",
         div(class = "col-sm-12", table)),
     div(class = "row",
         div(class = "col-sm-12", 
-            p("Data were retrieved on 11 June 2020 from the ", a("Department for Education's", href = 'https://www.gov.uk/government/organisations/department-for-education'), a("register of schools and colleges.", href = 'https://get-information-schools.service.gov.uk'), "The number of pupils and the percentage of those on free school meals are drawn from a school audit conducted in January 2019."), 
+            p("Data were retrieved on 11 November 2020 from the ", a("Department for Education's", href = 'https://www.gov.uk/government/organisations/department-for-education'), a("register of schools and colleges.", href = 'https://get-information-schools.service.gov.uk'), "The number of pupils and the percentage of those on free school meals are drawn from a school audit conducted in January 2020."), 
             p("For more information about schools in Trafford, please visit ", a("trafford.gov.uk/residents/schools", href = 'https://www.trafford.gov.uk/residents/schools', target = "_blank"))),
         br()
         )
