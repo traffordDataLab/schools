@@ -117,7 +117,7 @@ div(class = "container-fluid",
         div(class = "col-sm-12", table)),
     div(class = "row",
         div(class = "col-sm-12", 
-            p("Data were retrieved on 11 November 2020 from the ", a("Department for Education's", href = 'https://www.gov.uk/government/organisations/department-for-education'), a("register of schools and colleges.", href = 'https://get-information-schools.service.gov.uk'), "The number of pupils and the percentage of those on free school meals are drawn from a school audit conducted in January 2020."), 
+            p("Data were retrieved on 11 November 2020 from the ", a("Department for Education's", href = 'https://www.gov.uk/government/organisations/department-for-education'), a("register of schools and colleges.", href = 'https://get-information-schools.service.gov.uk'), "The number of pupils and the percentage of those on free school meals are drawn from the school census conducted in January 2021."), 
             p("For more information about schools in Trafford, please visit ", a("trafford.gov.uk/residents/schools", href = 'https://www.trafford.gov.uk/residents/schools', target = "_blank"))),
         br()
         )
