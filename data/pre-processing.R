@@ -41,7 +41,7 @@ df <- read_csv("results.csv") %>%
          phase = case_when(
            highest_admission_age <= 11 ~ "Primary",
            lowest_admission_age >= 11 & highest_admission_age <= 19 ~ "Secondary",
-           lowest_admission_age >= 16 ~ "Further Education",
+           lowest_admission_age >= 16 ~ "Post 16",
            TRUE ~ "All through"
          ),
          number_of_pupils = as.integer(number_of_pupils),

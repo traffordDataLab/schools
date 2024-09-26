@@ -18,12 +18,14 @@ sf <- st_read("data/local_authority.geojson", quiet = TRUE)
 
 # schools
 df <- read_csv("data/schools.csv") %>% 
-  mutate(phase = fct_relevel(as_factor(phase),
-                             level = c("Primary", "Secondary", "Further Education", "Continuous")),
-         ofsted_rating = fct_relevel(as_factor(ofsted_rating),
-                              level = c("Outstanding", "Good", "Requires improvement", "Serious Weaknesses")),
+  mutate(phase = factor(phase, 
+                        levels = c("Primary", "Secondary", "Post 16", "All through")),
+         ofsted_rating = factor(ofsted_rating,
+                              levels = c("Outstanding", "Good", "Requires improvement", "Serious Weaknesses")),
          website = ifelse(is.na(website), "", str_c("<a href='", website, "'target='_blank'>", str_remove(website, "http://www.|https://www.|www.|http://|https://"), "</a>")),
-         popup = ifelse(is.na(ofsted_rating), str_c("<strong>", name, "</strong><br/><a href='", compare_performance, "'target='_blank'>Compare performance with other schools</a>") %>% map(HTML), str_c("<strong>", name, "</strong><br/><a href='", ofsted_report, "'target='_blank'>Latest Ofsted report</a><br/><a href='", compare_performance, "'target='_blank'>Compare performance with other schools</a>") %>% map(HTML)))  %>% 
+         popup = ifelse(is.na(ofsted_rating), 
+                        paste0("<strong>", name, "</strong><br/><a href='", compare_performance, "'target='_blank'>Compare performance with other schools</a><br/><strong>% Free School Meal: </strong>", percent_fsm, "<br/><strong>Number of pupils: </strong>", number_of_pupils) %>% map(HTML), 
+                        paste0("<strong>", name, "</strong><br/><a href='", ofsted_report, "'target='_blank'>Latest Ofsted report</a><br/><a href='", compare_performance, "'target='_blank'>Compare performance with other schools</a><br/><strong>Ofsted rating: </strong>", ofsted_rating,"<br/><strong>% Free School Meal: </strong>", percent_fsm, "<br/><strong>Number of pupils: </strong>", number_of_pupils) %>% map(HTML)))  %>% 
   arrange(name)
 
 # shared dataframe
@@ -117,7 +119,7 @@ div(class = "container-fluid",
         div(class = "col-sm-12", table)),
     div(class = "row",
         div(class = "col-sm-12", 
-            p("Data were retrieved on 11 November 2020 from the ", a("Department for Education's", href = 'https://www.gov.uk/government/organisations/department-for-education'), a("register of schools and colleges.", href = 'https://get-information-schools.service.gov.uk'), "The number of pupils and the percentage of those on free school meals are drawn from the school census conducted in January 2021."), 
+            p("Data were retrieved on 26 September 2024 from the ", a("Department for Education's", href = 'https://www.gov.uk/government/organisations/department-for-education'), a("register of schools and colleges.", href = 'https://get-information-schools.service.gov.uk'), "The number of pupils and the percentage of those on free school meals are drawn from the school census conducted in January 2024."), 
             p("For more information about schools in Trafford, please visit ", a("trafford.gov.uk/residents/schools", href = 'https://www.trafford.gov.uk/residents/schools', target = "_blank"))),
         br()
         )
