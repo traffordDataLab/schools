@@ -36,8 +36,9 @@ sd_table <- select(df, name, headteacher, website, nursery_provision, sixth_form
 ```
 
 ```{r, map}
-map <- leaflet(sd, width = "100%", height = 350) %>%
-  addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2020)</a> | Data: <a href="https://get-information-schools.service.gov.uk" target="_blank">Department for Education</a>', options = tileOptions(minZoom = 11, maxZoom = 18)) %>%
+map <- leaflet(sd, width = "100%", height = 350, options = leafletOptions(zoomControl = TRUE, minZoom = 10, maxZoom = 16)) %>%
+  addTiles(urlTemplate = "", attribution = '<a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2023)</a> | <a href="https://www.trafforddatalab.io">@traffordDataLab</a>') %>%
+  addProviderTiles(providers$Esri.WorldGrayCanvas) %>% # Base map tiles
   addPolygons(data = sf, fillColor = "#CCCCCC", weight = 0.8, opacity = 1, color = "#212121") %>%  
   addAwesomeMarkers(popup = df$popup, icon = ~makeAwesomeIcon(icon = "fas fa-school", library = "fa", iconColor = "#FFFFFF", markerColor = "purple")) %>%
   addFullscreenControl()
